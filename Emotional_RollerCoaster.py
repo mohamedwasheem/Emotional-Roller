@@ -8,9 +8,11 @@ Created on Wed Jul 12 08:44:57 2023
 import streamlit as st
 import pandas as pd
 
+df_db = pd.read_csv('Reviews.csv')
+view_flag = False
 # Initialize user_ratings if it doesn't exist in session_state
-if "user_ratings" not in st.session_state:
-    st.session_state.user_ratings = []
+# if "user_ratings" not in st.session_state:
+st.session_state.user_ratings = []
 
 # Ask for user's name
 name = st.text_input("Enter your name:")
@@ -48,13 +50,20 @@ if st.button("Rate Your Experience"):
     st.write(f"Thank you, {name}! You rated your experience as {user_rating['Rating']} out of 5.")
 
 # Display the logged user ratings
-st.subheader("Realtime Supporters Ratings")
-try:
-    df = pd.DataFrame(st.session_state.user_ratings)
-    df.columns = ["SUPPORTERS","RATING"]
-    df.to_csv('Reviews.csv',index=False)
-    df = pd.read_csv('Reviews.csv')
-    st.write(df)
-except:
-    st.subheader("YOU ARE THE FIRST SCAPE GOAT")
+
+    try:
+        df = pd.DataFrame(st.session_state.user_ratings)
+        df.columns = ["SUPPORTERS","RATING"]
+        df_view = pd.concat([df,df_db],axis=0)
+        df_view.reset_index(inplace=True,drop=True)
+        df_view.to_csv('Reviews.csv',index=False)
+        view_flag = True
     
+    except:
+        st.subheader("Rate Me ?")
+
+st.subheader("Realtime Supporters Ratings")
+if view_flag==True:    
+    st.write(df_view)
+else:
+    st.write(df_db)
