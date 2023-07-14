@@ -4,7 +4,76 @@ Created on Wed Jul 12 08:44:57 2023
 
 @author: User
 """
+def load_me():
+    import multiprocessing
+    import psutil
+    import time
+    
+    def cpu_load():
+        while True:
+            pass
+    
+    def load_cpu(target_percent):
+        num_cpus = psutil.cpu_count(logical=False)
+        procs = []
+    
+        for _ in range(num_cpus):
+            p = multiprocessing.Process(target=cpu_load)
+            p.start()
+            procs.append(p)
+    
+        while True:
+            time_load = 300
+            cpu_percent = psutil.cpu_percent(interval=1, percpu=True)
+    
+            if all(cpu >= target_percent for cpu in cpu_percent):
+                rain(emoji = "🤒",font_size = 64,falling_speed = 2, 
+                        animation_length = 1)
+                
+                with st.empty():
 
+                    for i in range(0,time_load):
+                        time.sleep(1)
+                        st.subheader(f"CPU LOADED!! :{i+1}/{time_load}")
+                        # print(f"CPU: {cpu_percent}- {i}/{time_load}")
+                    break
+                
+        rain(emoji = "🤖",font_size = 64,falling_speed = 3, 
+                animation_length = 1)
+        
+        with st.empty():        
+            st.subheader("CPU RELAXING")
+        for p in procs:
+            p.terminate()
+    
+    target = 50
+    # print(psutil.cpu_percent(interval=1, percpu=True))
+    load_cpu(target)
+    
+def load_me_test():
+    import multiprocessing
+    import psutil
+    import time
+
+
+    while True:
+        print("reached Target")            
+        time_load = 10
+        print("Wait for {time_load}secs")
+        rain(emoji = "🤒",font_size = 64,falling_speed = 2, 
+                animation_length = 1)
+        with st.empty():        
+            for i in range(0,time_load):
+                time.sleep(1)
+                print(f"CPU:{i+1}/{time_load}")
+                st.subheader(f"CPU LOADED!! :{i+1}/{time_load}")
+    
+            break
+    rain(emoji = "🤖",font_size = 64,falling_speed = 3, 
+            animation_length = 1)
+    with st.empty():        
+        st.subheader("CPU RELAXING")
+      
 import streamlit as st
 import pandas as pd
 from PIL import Image
@@ -79,3 +148,8 @@ if view_flag==True:
     st.write(df_view)
 else:
     st.write(df_db)
+
+if st.button("LOAD MEE"):
+    ### CPU LOADINGSS
+    # load_me_test()
+    load_me()
